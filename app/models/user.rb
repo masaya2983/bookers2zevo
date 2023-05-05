@@ -16,7 +16,9 @@ class User < ApplicationRecord
   validates :name, length: { minimum: 2, maximum: 20 }, uniqueness: true
   validates :introduction, length: { maximum: 50 }
 def follow(user_id)
-  relationships.create(followed_id: user_id)
+  unless self == user_id
+  self.relationships.find_or_create_by(followed_id: user_id.to_i, follower_id: self.id)
+  end
 end
 # フォローを外すときの処理
 def unfollow(user_id)
